@@ -11,3 +11,13 @@
   align-items: center;
 }
 
+.btn-addpet-wrapper {
+  display: flex;
+  justify-content: end;
+}
+
+.btn-addpet {
+  width: 15%;
+  margin: 1rem 0;
+}
+

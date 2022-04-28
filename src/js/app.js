@@ -87,13 +87,13 @@ App = {
     });
   },
 
-  handleAdopt: function(event) {
+  handleAdopt: async function(event) {
     event.preventDefault();
 
     var petId = parseInt($(event.target).data('id'));
 
     var adoptionInstance;
-
+    const petPrice = await App.getPetPrice(petId);
     web3.eth.getAccounts(function(error, accounts) {
       if (error) {
         console.log(error);
@@ -105,13 +105,22 @@ App = {
         adoptionInstance = instance;
 
         // Execute adopt as a transaction by sending account
-        return adoptionInstance.adopt(petId, {from: account});
+        return adoptionInstance.adopt(petId, {from: account, value: web3.toWei(petPrice, "ether")});
       }).then(function(result) {
         return App.markAdopted();
       }).catch(function(err) {
         console.log(err.message);
       });
     });
+  },
+
+  getPetPrice: async function(petId) {
+    let petPrice;
+    await $.getJSON('../pets.json', function(data) {
+      const petData = data.find(pet => pet.id == petId);
+      petPrice = petData.price;
+    });
+    return Number(petPrice);
   }
 
 };
